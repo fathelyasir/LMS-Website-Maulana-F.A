@@ -35,6 +35,7 @@ export default function RegisterPage() {
       <div className="auth-aside-note"><strong>Butuh akun guru atau admin?</strong><span>Mintalah admin sekolah membuatkannya melalui panel Kelola akun.</span></div>
     </section>
     <section className="auth-card card">
+      <Link to="/landing" className="auth-home-link">← Kembali ke halaman utama</Link>
       <div className="auth-card-head"><div><span className="auth-kicker">AKUN SISWA</span><h2>Buat akun baru</h2></div><Link to="/masuk" className="auth-back">Sudah punya akun?</Link></div>
       <p className="auth-description">Gunakan kode kelas dari guru untuk langsung bergabung ke rombel.</p>
       <form className="auth-form" onSubmit={submit}>

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "description": "Data akun Kelasku tanpa password. File ini dapat diekspor ulang dari panel admin.",
+  "description": "Data akun demo Kelasku tanpa password. Password hanya digunakan oleh seed lokal untuk pengujian.",
   "updatedAt": "2026-09-04T00:00:00.000Z",
   "accounts": [
     { "id": "guru_sari", "nama": "Sari Wulandari", "peran": "guru", "identifier": "sari@sekolah.sch.id", "mapel": "Matematika", "jumlahLogin": 0, "terakhirLogin": null },
@@ -9,6 +9,6 @@
     { "id": "siswa_raka", "nama": "Raka Saputra", "peran": "siswa", "identifier": "0051234561", "nisn": "0051234561", "jumlahLogin": 0, "terakhirLogin": null },
     { "id": "siswa_dinda", "nama": "Dinda Amelia", "peran": "siswa", "identifier": "0051234562", "nisn": "0051234562", "jumlahLogin": 0, "terakhirLogin": null },
     { "id": "siswa_bima", "nama": "Bima Nugraha", "peran": "siswa", "identifier": "0051234563", "nisn": "0051234563", "jumlahLogin": 0, "terakhirLogin": null },
-    { "id": "siswa_nadia", "nama": "Nadia azalia", "peran": "siswa", "identifier": "0051234564", "nisn": "0051234564", "jumlahLogin": 0, "terakhirLogin": null }
+    { "id": "siswa_citra", "nama": "Citra Ayu", "peran": "siswa", "identifier": "0051234564", "nisn": "0051234564", "jumlahLogin": 0, "terakhirLogin": null }
   ]
 }

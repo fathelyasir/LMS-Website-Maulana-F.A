@@ -39,6 +39,23 @@ lain pada jaringan Wi-Fi/LAN yang sama, gunakan `npm run dev:public`, lalu buka
 `http://10.11.13.27:5173` atau alamat IP yang ditampilkan Vite. Pastikan Windows
 Firewall mengizinkan Node.js pada jaringan Private.
 
+Untuk menguji versi production hasil build:
+
+```bash
+npm run build
+npm run preview:public
+```
+
+Buka alamat `Network` yang ditampilkan Vite dari HP, tablet, atau komputer lain
+yang terhubung ke Wi-Fi/LAN yang sama. Pastikan perangkat penguji tidak memakai
+VPN yang memisahkan jaringan dan gunakan alamat IP komputer yang menjalankan
+server, bukan `localhost`.
+
+Data demo disimpan di `localStorage` masing-masing browser. Artinya akun dan
+perubahan data di setiap perangkat belum tersinkronisasi satu sama lain. Agar
+menjadi aplikasi publik multi-pengguna, aplikasi ini masih membutuhkan backend,
+database, autentikasi server, dan penyimpanan file terpusat.
+
 Server ini belum menjadi server internet umum. Untuk akses dari luar jaringan,
 gunakan deployment seperti Vercel/Netlify atau tunnel seperti Cloudflare Tunnel.
 
@@ -80,7 +97,10 @@ lms-app/
 
 `landing.html` bisa langsung dibuka di browser tanpa instalasi apa pun. Aplikasi
 React menggunakan `Db.js` sebagai backend tiruan berbasis `localStorage`, sehingga
-login dan session demo dapat berjalan tanpa server database.
+login dan session demo dapat berjalan tanpa server database. Ini siap digunakan
+sebagai demo/prototype lokal; untuk penggunaan sekolah sungguhan, autentikasi,
+password, file upload, dan data akademik wajib dipindahkan ke backend/database
+terproteksi. Jangan gunakan data siswa nyata pada mode demo ini.
 
 ## Penyesuaian dari dokumen SRS asli
 

@@ -51,6 +51,7 @@ export default function LoginPage() {
     <div style={styles.page}>
       <style>{css}</style>
       <div style={styles.card}>
+        <Link to="/landing" style={styles.homeLink}>← Kembali ke halaman utama</Link>
         <div style={styles.brandRow}>
           <span style={styles.brandMark} />
           <span style={styles.brandName}>Kelasku</span>
@@ -144,35 +145,43 @@ export default function LoginPage() {
 
 const css = `
   :root{
-    --ink:#16213E; --ink-soft:#3A4360; --muted:#5B6478;
-    --bg:#F4F6FB; --surface:#FFFFFF; --border:#E2E6F0;
-    --yellow:#FFC93C; --teal:#2FA88E; --teal-dark:#1F8E77; --coral:#FF6B6B;
+    --ink:#E7F0ED; --ink-soft:#B5C7C2; --muted:#82958F;
+    --bg:#0E171C; --surface:#162329; --border:rgba(174,205,196,.16);
+    --yellow:#E7C979; --teal:#83C8B6; --teal-dark:#5BAA98; --coral:#DF918C;
   }
 `;
 
 const styles = {
   page: {
     minHeight: "100vh",
-    background: "var(--bg)",
+    background: "transparent",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    fontFamily: "Inter, system-ui, sans-serif",
+    fontFamily: "var(--font-body)",
     padding: 24,
   },
   card: {
     width: "100%",
     maxWidth: 400,
-    background: "var(--surface)",
+    background: "linear-gradient(145deg,rgba(29,46,52,.94),rgba(19,32,38,.96))",
     border: "1px solid var(--border)",
     borderRadius: 20,
     padding: "36px 32px",
-    boxShadow: "0 30px 60px -30px rgba(22,33,62,0.25)",
+    boxShadow: "0 24px 60px rgba(0,0,0,.28)",
+  },
+  homeLink: {
+    display: "inline-flex",
+    alignItems: "center",
+    marginBottom: 22,
+    color: "var(--teal)",
+    fontSize: 13,
+    fontWeight: 700,
   },
   brandRow: { display: "flex", alignItems: "center", gap: 10, marginBottom: 28 },
   brandMark: {
     width: 26, height: 26, borderRadius: 7,
-    background: "linear-gradient(135deg, var(--teal), var(--ink))",
+    background: "linear-gradient(135deg, var(--teal), #6B9F98)",
   },
   brandName: { fontWeight: 700, fontSize: 18, color: "var(--ink)" },
   title: { fontSize: 24, fontWeight: 700, color: "var(--ink)", margin: 0 },
@@ -182,19 +191,19 @@ const styles = {
     flex: 1, padding: "9px 6px", borderRadius: 10, borderWidth: 1, borderStyle: "solid", borderColor: "var(--border)",
     background: "var(--bg)", color: "var(--ink-soft)", fontSize: 13, fontWeight: 600, cursor: "pointer",
   },
-  roleBtnActive: { background: "var(--ink)", color: "#fff", borderColor: "var(--ink)" },
+  roleBtnActive: { background: "linear-gradient(135deg,var(--teal),#6BB5A4)", color: "#10211F", borderColor: "var(--teal)" },
   form: { marginTop: 22, display: "flex", flexDirection: "column", gap: 16 },
   label: { fontSize: 13.5, fontWeight: 600, color: "var(--ink-soft)", display: "flex", flexDirection: "column", gap: 6 },
   input: {
     fontFamily: "inherit", fontSize: 15, padding: "11px 12px", borderRadius: 10,
-    border: "1px solid var(--border)", outline: "none",
+    border: "1px solid var(--border)", outline: "none", background: "rgba(8,18,23,.62)", color: "var(--ink)",
   },
   status: { fontSize: 13.5, padding: "10px 12px", borderRadius: 10 },
-  statusError: { background: "rgba(255,107,107,0.12)", color: "#B23A3A" },
-  statusSuccess: { background: "rgba(47,168,142,0.12)", color: "#1F8E77" },
+  statusError: { background: "rgba(255,120,146,.12)", color: "var(--coral)" },
+  statusSuccess: { background: "rgba(131,200,182,.12)", color: "var(--teal)" },
   submit: {
     marginTop: 4, padding: "12px", borderRadius: 999, border: "none",
-    background: "var(--teal)", color: "#fff", fontWeight: 700, fontSize: 15, cursor: "pointer",
+    background: "linear-gradient(135deg,var(--teal),#6BB5A4)", color: "#10211F", fontWeight: 800, fontSize: 15, cursor: "pointer",
   },
   footerLinks: { marginTop: 20, display: "flex", flexDirection: "column", gap: 8, fontSize: 13.5 },
   linkBtn: { background: "none", border: "none", color: "var(--teal-dark)", fontWeight: 600, cursor: "pointer", padding: 0, textAlign: "left" },

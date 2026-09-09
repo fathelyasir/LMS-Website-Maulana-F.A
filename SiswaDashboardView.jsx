@@ -69,9 +69,9 @@ export default function DashboardSiswa({
           <h2 style={styles.panelTitle}>Nilai Terbaru</h2>
           <div style={styles.list}>
             {nilaiTerbaru.map((n) => (
-              <div key={n.id} style={styles.item}>
+              <div key={`${n.jenis}-${n.id}`} style={styles.item}>
                 <div>
-                  <div style={styles.itemTitle}>{n.jenis}</div>
+                  <div style={styles.itemTitle}>{n.judul}</div>
                   <div style={styles.itemMeta}>{n.mapel}</div>
                 </div>
                 <span style={styles.nilai}>{n.nilai}</span>
@@ -86,24 +86,24 @@ export default function DashboardSiswa({
 
 const css = `
   :root{
-    --ink:#16213E; --ink-soft:#3A4360; --muted:#5B6478;
-    --bg:#F4F6FB; --surface:#FFFFFF; --border:#E2E6F0;
-    --yellow:#FFC93C; --yellow-ink:#5C4300; --teal:#2FA88E; --teal-dark:#1F8E77; --coral:#FF6B6B;
+    --ink:#E7F0ED; --ink-soft:#B5C7C2; --muted:#82958F;
+    --bg:#0E171C; --surface:#162329; --border:rgba(174,205,196,.16);
+    --yellow:#E7C979; --yellow-ink:#443A1F; --teal:#83C8B6; --teal-dark:#5BAA98; --coral:#DF918C;
   }
 `;
 
 const styles = {
-  page: { background: "var(--bg)", minHeight: "100vh", padding: "32px", fontFamily: "Inter, system-ui, sans-serif" },
+  page: { background: "transparent", minHeight: "100vh", padding: "0", fontFamily: "var(--font-body)" },
   header: { marginBottom: 28 },
   eyebrow: { fontSize: 13, color: "var(--muted)", margin: 0, fontWeight: 600 },
-  title: { fontSize: 26, color: "var(--ink)", margin: "4px 0 0", fontFamily: "'Space Grotesk', sans-serif" },
+  title: { fontSize: 30, color: "var(--ink)", margin: "4px 0 0", fontFamily: "var(--font-display)", letterSpacing: "-.04em" },
   grid: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 },
-  panel: { background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 16, padding: 20 },
+  panel: { background: "linear-gradient(145deg,rgba(29,46,52,.92),rgba(19,32,38,.95))", border: "1px solid var(--border)", borderRadius: 20, padding: 22, boxShadow: "0 14px 34px rgba(0,0,0,.2)" },
   panelTitle: { fontSize: 15, color: "var(--ink)", marginBottom: 14, fontWeight: 700 },
   list: { display: "flex", flexDirection: "column", gap: 10 },
   item: {
     display: "flex", justifyContent: "space-between", alignItems: "center",
-    padding: "12px", borderRadius: 10, border: "1px solid var(--border)",
+    padding: "13px", borderRadius: 12, border: "1px solid var(--border)", background: "rgba(7,13,28,.4)",
   },
   itemTitle: { fontSize: 14, fontWeight: 600, color: "var(--ink)" },
   itemMeta: { fontSize: 12.5, color: "var(--muted)", marginTop: 3 },
@@ -112,5 +112,5 @@ const styles = {
   badgeTeal: { fontSize: 11, fontWeight: 700, color: "var(--teal-dark)", background: "rgba(47,168,142,0.12)", padding: "4px 8px", borderRadius: 999 },
   smallBtn: { background: "var(--ink)", color: "#fff", border: "none", padding: "7px 12px", borderRadius: 999, fontSize: 12.5, fontWeight: 700, cursor: "pointer" },
   emptyState: { fontSize: 13.5, color: "var(--muted)" },
-  nilai: { fontSize: 18, fontWeight: 700, color: "var(--teal-dark)", fontFamily: "'JetBrains Mono', monospace" },
+  nilai: { fontSize: 18, fontWeight: 700, color: "var(--teal)", fontFamily: "var(--font-mono)", textShadow: "0 0 14px var(--glow-teal)" },
 };

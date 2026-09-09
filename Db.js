@@ -166,8 +166,12 @@ export function getKelasById(kelasId) {
 
 export function createKelas(guruId, { nama, mapel }) {
   const db = readDB();
-  const kode = (nama.replace(/[^a-zA-Z0-9]/g, "") + Math.floor(100 + Math.random() * 900)).toUpperCase();
-  const kelasBaru = { id: uid("kelas"), nama, mapel, guruId, kodeKelas: kode, siswaIds: [] };
+  const cleanNama = (nama || "").trim();
+  const cleanMapel = (mapel || "").trim();
+  if (!cleanNama || !cleanMapel) throw new Error("Nama rombel dan mata pelajaran wajib diisi.");
+  if (!db.users.some((user) => user.id === guruId && user.peran === "guru")) throw new Error("Guru pengampu tidak valid.");
+  const kode = (cleanNama.replace(/[^a-zA-Z0-9]/g, "") + Math.floor(100 + Math.random() * 900)).toUpperCase();
+  const kelasBaru = { id: uid("kelas"), nama: cleanNama, mapel: cleanMapel, guruId, kodeKelas: kode, siswaIds: [] };
   db.kelas.push(kelasBaru);
   writeDB(db);
   return kelasBaru;
@@ -207,7 +211,13 @@ export function getTugasByKelas(kelasId) {
 
 export function addTugas(kelasId, { judul, deskripsi, tenggat }) {
   const db = readDB();
-  const item = { id: uid("tugas"), kelasId, judul, deskripsi, tenggat };
+  const cleanJudul = (judul || "").trim();
+  const cleanDeskripsi = (deskripsi || "").trim();
+  const deadline = new Date(tenggat);
+  if (!cleanJudul || !Number.isFinite(deadline.getTime())) {
+    throw new Error("Judul tugas dan tenggat yang valid wajib diisi.");
+  }
+  const item = { id: uid("tugas"), kelasId, judul: cleanJudul, deskripsi: cleanDeskripsi, tenggat: deadline.toISOString() };
   db.tugas.push(item);
   writeDB(db);
   return item;
@@ -223,18 +233,19 @@ export function getPengumpulanSiswa(tugasId, siswaId) {
   return db.pengumpulan.find((p) => p.tugasId === tugasId && p.siswaId === siswaId) || null;
 }
 
-export function submitTugas(tugasId, siswaId, isi) {
+export function submitTugas(tugasId, siswaId, submission) {
   const db = readDB();
   const tugas = db.tugas.find((t) => t.id === tugasId);
   const terlambat = tugas ? new Date() > new Date(tugas.tenggat) : false;
   const existing = db.pengumpulan.find((p) => p.tugasId === tugasId && p.siswaId === siswaId);
+  const data = typeof submission === "string" ? { isi: submission, tipe: "link" } : submission;
   if (existing) {
-    existing.isi = isi;
+    Object.assign(existing, data);
     existing.waktuKumpul = nowISO();
     existing.status = terlambat ? "terlambat" : "tepat";
   } else {
     db.pengumpulan.push({
-      id: uid("kumpul"), tugasId, siswaId, isi,
+      id: uid("kumpul"), tugasId, siswaId, ...data,
       waktuKumpul: nowISO(), status: terlambat ? "terlambat" : "tepat",
       nilai: null, feedback: "",
     });
@@ -245,10 +256,13 @@ export function submitTugas(tugasId, siswaId, isi) {
 export function gradeTugas(pengumpulanId, nilai, feedback) {
   const db = readDB();
   const p = db.pengumpulan.find((x) => x.id === pengumpulanId);
-  if (p) {
-    p.nilai = Number(nilai);
-    p.feedback = feedback;
+  if (!p) throw new Error("Pengumpulan tugas tidak ditemukan.");
+  const score = Number(nilai);
+  if (!Number.isFinite(score) || score < 0 || score > 100) {
+    throw new Error("Nilai harus berupa angka antara 0 dan 100.");
   }
+  p.nilai = score;
+  p.feedback = (feedback || "").trim();
   writeDB(db);
 }
 
@@ -328,7 +342,13 @@ export function getLiveClassByKelas(kelasId) {
 
 export function addLiveClass(kelasId, { judul, waktu, tautan }) {
   const db = readDB();
-  const item = { id: uid("live"), kelasId, judul, waktu, tautan, rekamanUrl: "", hadir: [] };
+  const cleanJudul = (judul || "").trim();
+  const cleanTautan = (tautan || "").trim();
+  const date = new Date(waktu);
+  if (!cleanJudul || !Number.isFinite(date.getTime()) || !/^https?:\/\/\S+/i.test(cleanTautan)) {
+    throw new Error("Judul, waktu, dan tautan meeting yang valid wajib diisi.");
+  }
+  const item = { id: uid("live"), kelasId, judul: cleanJudul, waktu: date.toISOString(), tautan: cleanTautan, rekamanUrl: "", hadir: [] };
   db.liveClass.push(item);
   writeDB(db);
   return item;
@@ -359,7 +379,7 @@ export function getRekapNilaiSiswa(siswaId) {
     const nilaiTugas = tugasKelas
       .map((t) => {
         const p = db.pengumpulan.find((x) => x.tugasId === t.id && x.siswaId === siswaId);
-        return p && p.nilai != null ? { judul: t.judul, nilai: p.nilai, jenis: "Tugas" } : null;
+        return p && p.nilai != null ? { id: p.id, judul: t.judul, nilai: p.nilai, jenis: "Tugas" } : null;
       })
       .filter(Boolean);
 
@@ -367,7 +387,7 @@ export function getRekapNilaiSiswa(siswaId) {
     const nilaiKuis = kuisKelas
       .map((k) => {
         const h = db.hasilKuis.find((x) => x.kuisId === k.id && x.siswaId === siswaId);
-        return h ? { judul: k.judul, nilai: h.skor, jenis: "Kuis" } : null;
+        return h ? { id: h.id, judul: k.judul, nilai: h.skor, jenis: "Kuis" } : null;
       })
       .filter(Boolean);
 
@@ -387,6 +407,30 @@ export function getUserById(id) {
 
 export function getAllUsers() {
   return readDB().users.map(({ password, ...user }) => user);
+}
+
+export function getSystemSummary() {
+  const db = readDB();
+  const users = db.users;
+  const submissions = db.pengumpulan;
+  return {
+    users: users.length,
+    students: users.filter((user) => user.peran === "siswa").length,
+    teachers: users.filter((user) => user.peran === "guru").length,
+    admins: users.filter((user) => user.peran === "admin").length,
+    classes: db.kelas.length,
+    materials: db.materi.length,
+    assignments: db.tugas.length,
+    submissions: submissions.length,
+    pendingGrading: submissions.filter((item) => item.nilai == null).length,
+    quizzes: db.kuis.length,
+    quizAttempts: db.hasilKuis.length,
+    forumTopics: db.forum.length,
+    liveClasses: db.liveClass.length,
+    attendance: db.absensi.length,
+    driveSubmissions: submissions.filter((item) => item.tipe === "gdrive").length,
+    fileSubmissions: submissions.filter((item) => item.tipe === "dokumen" || item.tipe === "foto").length,
+  };
 }
 
 export function exportAccountData() {
