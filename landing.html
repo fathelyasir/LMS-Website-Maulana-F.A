@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kelasku — Ruang kelas digital untuk SMP &amp; SMA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Sora:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#E7F0ED;
+    --ink-soft:#B5C7C2;
+    --muted:#82958F;
+    --bg:#0E171C;
+    --surface:#162329;
+    --border:rgba(174,205,196,.16);
+    --yellow:#E7C979;
+    --yellow-ink:#443A1F;
+    --teal:#83C8B6;
+    --teal-dark:#5BAA98;
+    --coral:#DF918C;
+    --radius-s:10px;
+    --radius-m:16px;
+    --radius-l:26px;
+    --maxw:1180px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'DM Sans',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+  }
+  h1,h2,h3,.brand{
+    font-family:'Sora',system-ui,sans-serif;
+    color:var(--ink);
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+  .mono{ font-family:'Space Mono', monospace; }
+  a{ color:inherit; text-decoration:none; }
+  img{ max-width:100%; display:block; }
+  .wrap{ max-width:var(--maxw); margin:0 auto; padding:0 28px; }
+  @media (max-width:640px){ .wrap{ padding:0 20px; } }
+
+  /* reduced motion */
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
+  }
+
+  /* ---------- Nav ---------- */
+  header.nav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(14,23,28,0.88);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+  }
+  .nav-row{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 28px; max-width:var(--maxw); margin:0 auto;
+  }
+  .brand{ display:flex; align-items:center; gap:10px; font-size:20px; font-weight:700; }
+  .brand-logo{ width:38px; height:38px; object-fit:contain; border-radius:9px; }
+  .brand-mark{
+    width:30px; height:30px; border-radius:8px;
+    background:linear-gradient(135deg,var(--teal),var(--ink));
+    position:relative; flex:none;
+  }
+  .brand-mark::after{
+    content:""; position:absolute; inset:8px 8px 12px 8px;
+    border-radius:2px; background:var(--yellow);
+  }
+  nav.links{ display:flex; gap:28px; }
+  nav.links a{
+    font-size:15px; color:var(--ink-soft); font-weight:500;
+  }
+  nav.links a:hover{ color:var(--ink); }
+  .nav-actions{ display:flex; align-items:center; gap:14px; }
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    padding:11px 20px; border-radius:999px; font-weight:600; font-size:15px;
+    cursor:pointer; border:1px solid transparent; transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn:active{ transform:scale(0.97); }
+  .btn-primary{ background:#2A4148; color:var(--ink); }
+  .btn-primary:hover{ box-shadow:0 6px 20px rgba(22,33,62,0.25); }
+  .btn-ghost{ color:var(--ink); font-weight:600; font-size:15px; }
+  .btn-teal{ background:var(--teal); color:#10211F; }
+  .btn-teal:hover{ box-shadow:0 6px 20px rgba(47,168,142,0.3); }
+  .menu-toggle{ display:none; background:none; border:1px solid var(--ink); border-radius:8px; cursor:pointer; padding:7px 10px; color:var(--ink); font-size:18px; }
+  .mobile-links{ display:none; }
+
+  @media (max-width:900px){
+    nav.links{ display:none; }
+    .menu-toggle{ display:block; }
+    .nav-row{ position:relative; flex-wrap:wrap; }
+    .mobile-links{ display:none; flex-basis:100%; padding:12px 0 2px; border-top:1px solid var(--border); margin-top:12px; }
+    .mobile-links.is-open{ display:grid; gap:4px; }
+    .mobile-links a{ padding:8px 0; color:var(--ink-soft); font-size:14px; font-weight:600; }
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{ padding:72px 0 40px; }
+  .hero-grid{
+    display:grid; grid-template-columns:1.05fr 0.95fr; gap:56px; align-items:center;
+  }
+  @media (max-width:940px){ .hero-grid{ grid-template-columns:1fr; } }
+
+  .hero-copy{ opacity:0; transform:translateY(14px); animation:rise .7s ease forwards; }
+  .hero-visual{ opacity:0; transform:translateY(14px); animation:rise .7s ease .15s forwards; }
+  @keyframes rise{ to{ opacity:1; transform:none; } }
+
+  .hero h1{
+    font-size:clamp(32px,4.6vw,52px); font-weight:700; line-height:1.08;
+    max-width:15ch;
+  }
+  .hero p.lede{
+    margin-top:20px; font-size:18px; color:var(--muted); max-width:46ch; line-height:1.65;
+  }
+  .hero-ctas{ display:flex; gap:14px; margin-top:32px; flex-wrap:wrap; }
+  .hero-note{ margin-top:18px; font-size:14px; color:var(--muted); }
+  .hero-note .mono{ background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:2px 6px; }
+
+  /* mock ui card */
+  .device{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-l);
+    box-shadow:0 30px 60px -30px rgba(22,33,62,0.28);
+    overflow:hidden;
+  }
+  .device-top{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 20px; border-bottom:1px solid var(--border);
+  }
+  .device-tabs{ display:flex; gap:6px; background:var(--bg); padding:4px; border-radius:999px; }
+  .device-tab{
+    border:none; background:transparent; padding:7px 14px; border-radius:999px; font-size:13px;
+    font-weight:600; color:var(--muted); cursor:pointer; font-family:'DM Sans',sans-serif;
+  }
+  .device-tab.active{ background:var(--ink); color:#fff; }
+  .live-dot{ display:flex; align-items:center; gap:6px; font-size:12px; color:var(--teal-dark); font-weight:600; }
+  .live-dot span.pulse{
+    width:8px; height:8px; border-radius:50%; background:var(--teal);
+    box-shadow:0 0 0 rgba(47,168,142,0.5); animation:pulse 1.8s infinite;
+  }
+  @keyframes pulse{
+    0%{ box-shadow:0 0 0 0 rgba(47,168,142,0.45); }
+    70%{ box-shadow:0 0 0 8px rgba(47,168,142,0); }
+    100%{ box-shadow:0 0 0 0 rgba(47,168,142,0); }
+  }
+  .device-body{ padding:22px 20px 26px; }
+  .device-heading{ font-size:13px; color:var(--muted); margin-bottom:12px; font-weight:500; }
+  .row-item{
+    display:flex; align-items:center; gap:14px; padding:12px 0; border-bottom:1px dashed var(--border);
+  }
+  .row-item:last-child{ border-bottom:none; }
+  .time-chip{
+    font-size:12px; padding:6px 8px; border-radius:8px; background:var(--bg); color:var(--ink-soft);
+    min-width:56px; text-align:center; flex:none;
+  }
+  .row-main{ flex:1; min-width:0; }
+  .row-title{ font-size:14.5px; font-weight:600; }
+  .row-sub{ font-size:12.5px; color:var(--muted); margin-top:2px; }
+  .badge{ font-size:11.5px; font-weight:600; padding:4px 9px; border-radius:999px; flex:none; }
+  .badge-teal{ background:rgba(47,168,142,0.12); color:var(--teal-dark); }
+  .badge-yellow{ background:rgba(255,201,60,0.25); color:var(--yellow-ink); }
+  .badge-coral{ background:rgba(255,107,107,0.14); color:#B23A3A; }
+  .progress{ height:6px; border-radius:99px; background:var(--bg); margin-top:8px; overflow:hidden; }
+  .progress > span{ display:block; height:100%; background:var(--teal); border-radius:99px; }
+
+  /* ---------- section shell ---------- */
+  section{ padding:84px 0; }
+  .section-head{ max-width:640px; margin-bottom:44px; }
+  .section-head h2{ font-size:clamp(26px,3.2vw,36px); font-weight:700; line-height:1.15; }
+  .section-head p{ margin-top:14px; color:var(--muted); font-size:16.5px; line-height:1.6; }
+
+  /* ---------- features ---------- */
+  .feature-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--border); border:1px solid var(--border); border-radius:var(--radius-m); overflow:hidden; }
+  @media (max-width:940px){ .feature-grid{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:560px){ .feature-grid{ grid-template-columns:1fr; } }
+  .feature{
+    background:var(--surface); padding:26px 22px; min-height:190px;
+    border-left:3px solid transparent;
+  }
+  .feature h3{ font-size:16.5px; font-weight:700; margin-top:14px; }
+  .feature p{ margin-top:8px; font-size:14.5px; color:var(--muted); line-height:1.55; }
+  .feature .fr-tag{ margin-top:12px; display:inline-block; font-size:11px; color:var(--muted); }
+  .icon{ width:26px; height:26px; }
+  .feature[data-accent="teal"]{ border-left-color:var(--teal); }
+  .feature[data-accent="yellow"]{ border-left-color:var(--yellow); }
+  .feature[data-accent="coral"]{ border-left-color:var(--coral); }
+  .feature[data-accent="ink"]{ border-left-color:var(--ink); }
+
+  /* ---------- audiences ---------- */
+  .audience-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:20px; }
+  @media (max-width:940px){ .audience-grid{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:560px){ .audience-grid{ grid-template-columns:1fr; } }
+  .audience-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-m);
+    padding:26px 22px;
+  }
+  .audience-card h3{ font-size:18px; font-weight:700; }
+  .audience-card ul{ margin:14px 0 0; padding:0; list-style:none; }
+  .audience-card li{
+    font-size:14px; color:var(--ink-soft); padding:7px 0 7px 22px; position:relative;
+  }
+  .audience-card li::before{
+    content:""; position:absolute; left:0; top:14px; width:8px; height:8px; border-radius:2px;
+    background:var(--teal);
+  }
+
+  /* ---------- how it works ---------- */
+  .steps{ display:grid; grid-template-columns:repeat(3,1fr); gap:0; position:relative; }
+  @media (max-width:800px){ .steps{ grid-template-columns:1fr; gap:28px; } }
+  .step{ position:relative; padding:0 24px 0 0; }
+  .step .num{
+    font-family:'Sora',sans-serif; font-size:34px; font-weight:700; color:var(--teal);
+  }
+  .step h3{ font-size:17px; margin-top:10px; }
+  .step p{ font-size:14.5px; color:var(--muted); margin-top:8px; line-height:1.55; }
+  .step:not(:last-child)::after{
+    content:""; position:absolute; top:20px; right:0; width:100%; height:1px;
+    background:repeating-linear-gradient(90deg,var(--border) 0 8px, transparent 8px 14px);
+  }
+  @media (max-width:800px){ .step::after{ display:none; } }
+
+  /* ---------- testimonial ---------- */
+  .testi{
+    background:#233A40; color:var(--ink); border-radius:var(--radius-l);
+    padding:52px 44px; display:grid; grid-template-columns:auto 1fr; gap:28px; align-items:flex-start;
+  }
+  @media (max-width:700px){ .testi{ grid-template-columns:1fr; padding:36px 26px; } }
+  .quote-mark{ font-family:'Sora',sans-serif; font-size:64px; color:var(--yellow); line-height:1; }
+  .testi p.quote{ font-size:21px; line-height:1.55; font-weight:500; max-width:56ch; }
+  .testi .who{ margin-top:20px; font-size:14px; color:#B9C0D6; }
+
+  /* ---------- final cta ---------- */
+  .final-cta{
+    text-align:left; background:var(--surface); border:1px solid var(--border);
+    border-radius:var(--radius-l); padding:56px 48px;
+    display:flex; align-items:center; justify-content:space-between; gap:32px; flex-wrap:wrap;
+  }
+  .final-cta h2{ font-size:clamp(24px,3vw,32px); max-width:20ch; }
+  .final-cta-actions{ display:flex; gap:14px; flex-wrap:wrap; }
+
+  /* ---------- footer ---------- */
+  footer{ border-top:1px solid var(--border); padding:48px 0 32px; }
+  .footer-grid{ display:grid; grid-template-columns:1.4fr repeat(3,1fr); gap:32px; }
+  @media (max-width:760px){ .footer-grid{ grid-template-columns:1fr 1fr; } }
+  .footer-grid h4{ font-size:13px; color:var(--muted); font-weight:600; margin-bottom:14px; }
+  .footer-grid a{ display:block; font-size:14px; color:var(--ink-soft); padding:5px 0; }
+  .footer-grid a:hover{ color:var(--ink); }
+  .footer-bottom{
+    margin-top:40px; padding-top:24px; border-top:1px solid var(--border);
+    font-size:13px; color:var(--muted); display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;
+  }
+</style>
+<style>
+  /* Kelasku visual refresh: satu bahasa visual dengan dashboard futuristik. */
+  body{ background-color:var(--bg); background-image:radial-gradient(circle at 12% 0%,rgba(131,200,182,.07),transparent 30rem),radial-gradient(circle at 90% 15%,rgba(169,165,197,.05),transparent 32rem),linear-gradient(rgba(174,205,196,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(174,205,196,.025) 1px,transparent 1px); background-size:auto,auto,36px 36px,36px 36px; background-attachment:fixed; }
+  header.nav{ background:rgba(8,13,28,.78); border-bottom-color:var(--border); }
+  .nav-row{ padding-top:13px; padding-bottom:13px; }
+  .brand-mark{ box-shadow:0 0 18px rgba(131,200,182,.18); }
+  .brand{ color:var(--ink); }
+  nav.links a{ position:relative; padding:6px 0; }
+  nav.links a::after{ content:""; position:absolute; left:0; right:100%; bottom:0; height:2px; background:var(--teal); transition:right .2s ease; }
+  nav.links a:hover::after{ right:0; }
+  .btn{ border-radius:999px; box-shadow:none; }
+  .btn:hover{ transform:translateY(-2px); box-shadow:0 8px 22px rgba(131,200,182,.12); }
+  .btn-primary{ background:linear-gradient(135deg,#26395F,#182743); color:var(--ink); border:1px solid var(--border); }
+  .btn-teal{ background:linear-gradient(135deg,var(--teal),#16B99D); color:#07121B; }
+  .btn-ghost{ border:1px solid var(--border); background:rgba(255,255,255,.025); color:var(--ink); padding:10px 18px; }
+  .hero{ position:relative; padding-top:92px; }
+  .hero::before{ content:"KELASKU / 01"; position:absolute; top:34px; left:max(28px,calc((100% - var(--maxw))/2 + 28px)); font:500 11px 'Space Mono',monospace; color:var(--teal-dark); letter-spacing:.08em; }
+  .hero h1{ font-size:clamp(38px,5.4vw,66px); line-height:1.02; letter-spacing:-.045em; }
+  .hero h1::selection{ background:var(--yellow); color:var(--ink); }
+  .hero p.lede{ color:var(--ink-soft); }
+  .hero-visual{ position:relative; }
+  .hero-visual::after{ content:"MATERI / TUGAS / NILAI"; position:absolute; right:-18px; bottom:-18px; padding:9px 12px; background:var(--yellow); color:#3A2B00; font:500 10px 'Space Mono',monospace; transform:rotate(3deg); box-shadow:0 0 20px rgba(248,211,107,.18); }
+  .device{ border:1px solid rgba(131,200,182,.28); border-radius:22px; background:linear-gradient(145deg,rgba(29,46,52,.96),rgba(14,23,28,.96)); box-shadow:0 22px 54px rgba(0,0,0,.3); transform:rotate(1.2deg); }
+  .device-top{ background:rgba(8,13,28,.72); border-bottom-color:var(--border); }
+  .device-tabs{ background:rgba(255,255,255,.12); }
+  .device-tab{ color:#D8DEEC; }
+  .device-tab.active{ background:var(--teal); color:#10211F; }
+  .live-dot{ color:#B9F0DC; }
+  .device-body{ color:var(--ink); }
+  .time-chip{ background:rgba(5,10,23,.6); color:var(--ink-soft); }
+  .badge-teal{ background:rgba(131,200,182,.12); color:var(--teal); }
+  .badge-yellow{ background:rgba(248,211,107,.16); color:var(--yellow); }
+  .badge-coral{ background:rgba(255,120,146,.13); color:var(--coral); }
+  .section-head h2{ letter-spacing:-.04em; }
+  .feature-grid{ border:1px solid var(--border); border-radius:20px; box-shadow:0 20px 50px rgba(0,0,0,.2); }
+  .feature{ transition:transform .18s ease, background .18s ease; }
+  .feature:hover{ background:rgba(131,200,182,.045); transform:translateY(-3px); position:relative; z-index:1; }
+  .audience-card{ border:1px solid var(--border); border-radius:20px; box-shadow:0 18px 45px rgba(0,0,0,.2); }
+  .audience-card:nth-child(2){ box-shadow:0 18px 45px rgba(248,211,107,.08); }
+  .audience-card:nth-child(3){ box-shadow:0 18px 45px rgba(255,120,146,.08); }
+  .audience-card:nth-child(4){ box-shadow:0 18px 45px rgba(155,140,255,.08); }
+  .testi{ border:1px solid var(--border); box-shadow:0 20px 55px rgba(0,0,0,.24); }
+  .final-cta{ border:1px solid var(--border); box-shadow:0 20px 55px rgba(0,0,0,.24); }
+  @media (max-width:640px){ .hero{ padding-top:72px; } .hero::before{ left:20px; } .hero-visual::after{ right:4px; } .device{ transform:none; } }
+
+  /* rotating education figure: editorial composition inspired by the reference */
+  .figure-stage{ position:relative; min-height:480px; display:flex; align-items:center; justify-content:center; }
+  .figure-stage::before{ content:"TOKOH / PENDIDIKAN"; position:absolute; top:6px; right:0; color:var(--teal-dark); font:500 10px 'Space Mono',monospace; letter-spacing:.12em; }
+  .figure-stage::after{ content:"BELAJAR UNTUK MENYALAKAN MASA DEPAN"; position:absolute; bottom:4px; left:0; color:var(--muted); font:500 10px 'Space Mono',monospace; letter-spacing:.06em; }
+  .figure-card{ position:relative; width:min(100%,500px); min-height:440px; overflow:hidden; border:1px solid rgba(131,200,182,.28); border-radius:24px; background:linear-gradient(145deg,#21383d,#101d23); box-shadow:0 25px 60px rgba(0,0,0,.32); }
+  .figure-card::before{ content:""; position:absolute; inset:18px; border:1px solid rgba(231,240,237,.14); border-radius:16px; pointer-events:none; }
+  .figure-name{ position:absolute; z-index:1; top:42px; left:18px; right:18px; color:rgba(231,240,237,.9); font:800 clamp(38px,6vw,72px)/.82 'Sora',sans-serif; letter-spacing:-.08em; text-transform:uppercase; word-break:break-word; }
+  .figure-portrait{ position:absolute; z-index:2; inset:78px 28px 0; width:calc(100% - 56px); height:calc(100% - 78px); object-fit:contain; object-position:center bottom; filter:grayscale(1) contrast(1.08); mix-blend-mode:screen; }
+  .figure-shade{ position:absolute; z-index:3; inset:0; background:linear-gradient(180deg,transparent 36%,rgba(10,18,22,.06) 54%,rgba(10,18,22,.9) 100%); pointer-events:none; }
+  .figure-copy{ position:absolute; z-index:4; left:28px; right:28px; bottom:24px; }
+  .figure-quote{ margin:0; color:var(--ink); font:500 16px/1.45 'DM Sans',sans-serif; max-width:32ch; }
+  .figure-meta{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:14px; color:var(--teal); font:700 11px 'Space Mono',monospace; text-transform:uppercase; letter-spacing:.04em; }
+  .figure-index{ color:var(--yellow); }
+  .figure-fallback{ position:absolute; z-index:2; inset:78px 28px 0; display:none; align-items:center; justify-content:center; color:var(--teal); font:800 120px 'Sora',sans-serif; opacity:.8; }
+  .figure-fallback.is-visible{ display:flex; }
+  .figure-card .figure-portrait.is-hidden{ display:none; }
+  @media (max-width:640px){ .figure-stage{ min-height:410px; } .figure-card{ min-height:380px; } .figure-name{ top:34px; font-size:48px; } .figure-portrait{ inset:72px 18px 0; width:calc(100% - 36px); height:calc(100% - 72px); } .figure-copy{ left:22px; right:22px; bottom:18px; } .figure-quote{ font-size:14px; } }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-row">
+    <a href="index.html#/landing" class="brand"><img src="assets/logo-kelasku.png" alt="Logo Kelasku" class="brand-logo">Kelasku</a>
+    <nav class="links">
+      <a href="#fitur">Fitur</a>
+      <a href="#audiens">Untuk Siapa</a>
+      <a href="#cara-kerja">Cara Kerja</a>
+      <a href="#kontak">Kontak</a>
+    </nav>
+    <button class="menu-toggle" type="button" aria-label="Buka menu navigasi" aria-expanded="false" onclick="toggleMenu(this)">&#9776;</button>
+    <nav class="mobile-links" id="mobileLinks" aria-label="Navigasi mobile">
+      <a href="#fitur">Fitur</a>
+      <a href="#audiens">Untuk Siapa</a>
+      <a href="#cara-kerja">Cara Kerja</a>
+      <a href="#kontak">Kontak</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="index.html#/masuk" class="btn-ghost">Masuk</a>
+      <a href="index.html#/daftar" class="btn btn-primary">Buat akun siswa</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <h1>Satu ruang kelas digital untuk SMP dan SMA yang benar-benar dipakai.</h1>
+        <p class="lede">Kelasku menyatukan materi, tugas, ulangan, dan rapor dalam satu tempat — supaya guru tidak perlu bolak-balik lima aplikasi, dan siswa tidak lagi lupa tenggat waktu.</p>
+        <div class="hero-ctas">
+          <a href="index.html#/daftar" class="btn btn-teal">Mulai belajar</a>
+          <a href="#cara-kerja" class="btn btn-ghost">Lihat cara kerjanya</a>
+        </div>
+        <p class="hero-note">Dipakai untuk kelas <span class="mono">VII</span> sampai <span class="mono">XII</span> — satu sekolah maupun satu yayasan dengan beberapa cabang.</p>
+      </div>
+
+      <div class="hero-visual">
+        <div class="figure-stage">
+          <article class="figure-card" aria-live="polite">
+            <div class="figure-name" id="figureName">HABIBIE</div>
+            <img class="figure-portrait" id="figurePortrait" alt="" />
+            <div class="figure-fallback" id="figureFallback" aria-hidden="true">BJH</div>
+            <div class="figure-shade"></div>
+            <div class="figure-copy">
+              <p class="figure-quote" id="figureQuote"></p>
+              <div class="figure-meta"><span id="figureRole"></span><span class="figure-index" id="figureIndex"></span></div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FITUR -->
+  <section id="fitur">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Semua yang dipakai sekolah sehari-hari, bukan sekadar fitur pajangan.</h2>
+        <p>Dirancang dari alur kerja nyata guru dan siswa di jenjang SMP dan SMA, bukan diterjemahkan mentah dari aplikasi kampus.</p>
+      </div>
+      <div class="feature-grid">
+
+        <div class="feature" data-accent="teal">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#2FA88E" stroke-width="1.8"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18M8 4v5"/></svg>
+          <h3>Kelas &amp; Jadwal Pelajaran</h3>
+          <p>Buat kelas per rombel (mis. VIII-A, XI IPA 2), atur jadwal mapel, dan undang siswa lewat kode kelas.</p>
+          <span class="fr-tag mono">FR-06 – FR-09</span>
+        </div>
+
+        <div class="feature" data-accent="yellow">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#B98900" stroke-width="1.8"><path d="M6 3h9l5 5v13H6z"/><path d="M14 3v5h5"/></svg>
+          <h3>Materi Pelajaran</h3>
+          <p>Unggah materi berupa PDF, slide, video, atau tautan, dikelompokkan per pertemuan dan bisa dijadwalkan rilis otomatis.</p>
+          <span class="fr-tag mono">FR-10 – FR-13</span>
+        </div>
+
+        <div class="feature" data-accent="coral">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#E04F4F" stroke-width="1.8"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          <h3>Tugas &amp; Pengumpulan</h3>
+          <p>Tenggat waktu otomatis ditandai, status terlambat terdeteksi, dan guru bisa memberi nilai plus catatan langsung.</p>
+          <span class="fr-tag mono">FR-14 – FR-19</span>
+        </div>
+
+        <div class="feature" data-accent="ink">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#16213E" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>
+          <h3>Kuis &amp; Ulangan Online</h3>
+          <p>Susun bank soal pilihan ganda dan esai, acak urutan soal, dan biarkan sistem menilai otomatis soal objektif.</p>
+          <span class="fr-tag mono">FR-20 – FR-24</span>
+        </div>
+
+        <div class="feature" data-accent="teal">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#2FA88E" stroke-width="1.8"><path d="M4 4h16v12H7l-3 3z"/></svg>
+          <h3>Forum Diskusi Kelas</h3>
+          <p>Ruang tanya-jawab per kelas dengan notifikasi balasan, supaya diskusi tidak tercecer di grup chat pribadi.</p>
+          <span class="fr-tag mono">FR-25 – FR-27</span>
+        </div>
+
+        <div class="feature" data-accent="yellow">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#B98900" stroke-width="1.8"><rect x="3" y="6" width="14" height="12" rx="2"/><path d="M21 8l-4 3 4 3z"/></svg>
+          <h3>Kelas Daring Langsung</h3>
+          <p>Jadwalkan sesi live, kirim pengingat otomatis, catat kehadiran, dan simpan rekaman untuk ditonton ulang.</p>
+          <span class="fr-tag mono">FR-28 – FR-31</span>
+        </div>
+
+        <div class="feature" data-accent="coral">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#E04F4F" stroke-width="1.8"><path d="M12 3v4M5 8l3 2M19 8l-3 2M4 15h16M7 15v5M17 15v5"/></svg>
+          <h3>Absensi Digital</h3>
+          <p>Presensi harian otomatis tercatat saat siswa membuka kelas atau bergabung ke sesi live — tanpa kertas absen.</p>
+          <span class="fr-tag mono">Fitur tambahan</span>
+        </div>
+
+        <div class="feature" data-accent="ink">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#16213E" stroke-width="1.8"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+          <h3>Rapor &amp; Portal Orang Tua</h3>
+          <p>Nilai terekap otomatis per mapel dan semester, dan orang tua bisa memantau progres serta kehadiran anak.</p>
+          <span class="fr-tag mono">FR-18, FR-32 + tambahan</span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- UNTUK SIAPA -->
+  <section id="audiens" style="background:var(--surface); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Dibuat berdasarkan peran, bukan satu tampilan untuk semua orang.</h2>
+        <p>Guru, siswa, wali kelas, dan orang tua melihat hal yang relevan dengan mereka saja.</p>
+      </div>
+      <div class="audience-grid">
+        <div class="audience-card">
+          <h3>Untuk Guru</h3>
+          <ul>
+            <li>Kelola beberapa kelas dan mapel dari satu dashboard</li>
+            <li>Nilai tugas dan ulangan lebih cepat dengan rekap otomatis</li>
+            <li>Jadwalkan live class dan lihat siapa yang belum hadir</li>
+          </ul>
+        </div>
+        <div class="audience-card">
+          <h3>Untuk Siswa</h3>
+          <ul>
+            <li>Semua tugas dan tenggat waktu dalam satu daftar</li>
+            <li>Kerjakan ulangan dan lihat nilai secara langsung</li>
+            <li>Ikuti forum diskusi tanpa perlu grup chat tambahan</li>
+          </ul>
+        </div>
+        <div class="audience-card">
+          <h3>Untuk Wali Kelas &amp; Sekolah</h3>
+          <ul>
+            <li>Pantau kehadiran dan performa satu angkatan sekaligus</li>
+            <li>Kelola akun guru dan siswa dari satu panel admin</li>
+            <li>Unduh laporan aktivitas untuk kebutuhan akreditasi</li>
+          </ul>
+        </div>
+        <div class="audience-card">
+          <h3>Untuk Orang Tua</h3>
+          <ul>
+            <li>Pantau nilai dan kehadiran anak tanpa bertanya ke guru</li>
+            <li>Dapat notifikasi saat ada tugas atau ujian mendekat</li>
+            <li>Lihat rapor semester langsung dari ponsel</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CARA KERJA -->
+  <section id="cara-kerja">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Mulai dipakai dalam tiga langkah.</h2>
+        <p>Tidak perlu tim IT untuk memulai — sekolah bisa aktif dalam waktu kurang dari satu hari.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="num">01</div>
+          <h3>Daftarkan sekolah</h3>
+          <p>Buat akun admin sekolah, lalu tambahkan akun guru untuk setiap mata pelajaran.</p>
+        </div>
+        <div class="step">
+          <div class="num">02</div>
+          <h3>Buat kelas &amp; undang siswa</h3>
+          <p>Setiap kelas mendapat kode unik. Siswa tinggal memasukkan kode itu untuk bergabung.</p>
+        </div>
+        <div class="step">
+          <div class="num">03</div>
+          <h3>Mulai unggah &amp; pantau</h3>
+          <p>Unggah materi dan tugas pertama, lalu pantau progres belajar dari dashboard.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONI -->
+  <section>
+    <div class="wrap">
+      <div class="testi">
+        <div class="quote-mark">&ldquo;</div>
+        <div>
+          <p class="quote">Guru-guru kami akhirnya berhenti mengirim tugas lewat grup WhatsApp. Semua rapi dalam satu kelas, dan orang tua jadi lebih tenang karena bisa memantau langsung.</p>
+          <p class="who">— Ilustrasi masukan pengguna, Koordinator Kurikulum SMP (contoh skenario penggunaan)</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section id="daftar">
+    <div class="wrap">
+      <div class="final-cta">
+        <h2>Siap merapikan kelas digital sekolah Anda?</h2>
+        <div class="final-cta-actions">
+          <a href="index.html#/daftar" class="btn btn-teal">Buat akun siswa</a>
+          <a href="#kontak" class="btn btn-ghost">Bicara dengan tim kami</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer id="kontak">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a href="index.html#/landing" class="brand"><span class="brand-mark"></span>Kelasku</a>
+        <p style="margin-top:14px; font-size:14px; color:var(--muted); max-width:32ch;">Ruang kelas digital untuk SMP dan SMA — dibangun dari kebutuhan guru dan siswa sehari-hari.</p>
+      </div>
+      <div>
+        <h4>Produk</h4>
+        <a href="#fitur">Fitur</a>
+        <a href="#cara-kerja">Cara kerja</a>
+        <a href="#audiens">Untuk siapa</a>
+      </div>
+      <div>
+        <h4>Sekolah</h4>
+        <a href="#daftar">Daftarkan sekolah</a>
+        <a href="index.html#/masuk">Masuk ke akun</a>
+        <a href="mailto:halo@kelasku.contoh?subject=Bantuan%20Kelasku">Pusat bantuan</a>
+      </div>
+      <div>
+        <h4>Kontak</h4>
+        <a href="mailto:halo@kelasku.contoh">halo@kelasku.contoh</a>
+        <a href="https://wa.me/6281234567890?text=Halo%20Admin%20Kelasku" target="_blank" rel="noreferrer">WhatsApp Admin</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Kelasku. Dibuat sebagai contoh tugas kuliah RPL.</span>
+      <span>Dibangun untuk jenjang SMP &amp; SMA sederajat</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  let navigationAudioContext;
+
+  function playNavigationSound(){
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return;
+    if (!navigationAudioContext) navigationAudioContext = new AudioContext();
+    if (navigationAudioContext.state === 'suspended') {
+      void navigationAudioContext.resume().then(() => playNavigationTone());
+      return;
+    }
+    playNavigationTone();
+  }
+
+  function playNavigationTone(){
+    const oscillator = navigationAudioContext.createOscillator();
+    const gain = navigationAudioContext.createGain();
+    const start = navigationAudioContext.currentTime;
+    oscillator.type = 'sine';
+    oscillator.frequency.setValueAtTime(620, start);
+    oscillator.frequency.exponentialRampToValueAtTime(420, start + 0.07);
+    gain.gain.setValueAtTime(0.0001, start);
+    gain.gain.exponentialRampToValueAtTime(0.12, start + 0.008);
+    gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.085);
+    oscillator.connect(gain);
+    gain.connect(navigationAudioContext.destination);
+    oscillator.start(start);
+    oscillator.stop(start + 0.09);
+  }
+
+  document.addEventListener('click', (event) => {
+    const target = event.target instanceof Element ? event.target.closest('a, button') : null;
+    if (!target || target.disabled || target.getAttribute('aria-disabled') === 'true') return;
+    playNavigationSound();
+    if (target.tagName !== 'A' || event.defaultPrevented || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || target.target === '_blank' || target.hasAttribute('download')) return;
+    const href = target.href;
+    if (!href) return;
+    event.preventDefault();
+    window.setTimeout(() => window.location.assign(href), 120);
+  }, { capture: true });
+
+  const figures = [
+    {
+      name: "HABIBIE",
+      role: "Insinyur · Presiden ke-3 RI",
+      initials: "BJH",
+      quote: "“Belajarlah dengan tekun, karena ilmu adalah bekal untuk membangun masa depan.”",
+      image: "assets/habibie.jpg"
+    },
+    {
+      name: "KI HAJAR",
+      role: "Bapak Pendidikan Nasional",
+      initials: "KHD",
+      quote: "“Ing ngarsa sung tulada, ing madya mangun karsa, tut wuri handayani.”",
+      image: "assets/ki-hajar.jpg"
+    },
+    {
+      name: "KARTINI",
+      role: "Pelopor pendidikan perempuan",
+      initials: "RAK",
+      quote: "“Habis gelap terbitlah terang.”",
+      image: "assets/kartini.jpg"
+    },
+    {
+      name: "BUYA HAMKA",
+      role: "Ulama · Sastrawan · Pendidik",
+      initials: "HAM",
+      quote: "“Iman tanpa ilmu bagaikan lentera di tangan bayi.”",
+      image: "assets/buya-hamka.jpg"
+    }
+  ];
+
+  function renderFigure(){
+    const last = Number(sessionStorage.getItem('kelasku-last-figure'));
+    let index = Math.floor(Math.random() * figures.length);
+    if (Number.isInteger(last) && figures.length > 1 && index === last) index = (index + 1) % figures.length;
+    const figure = figures[index];
+    sessionStorage.setItem('kelasku-last-figure', String(index));
+    document.getElementById('figureName').textContent = figure.name;
+    document.getElementById('figureQuote').textContent = figure.quote;
+    document.getElementById('figureRole').textContent = figure.role;
+    document.getElementById('figureIndex').textContent = `${String(index + 1).padStart(2, '0')} / ${String(figures.length).padStart(2, '0')}`;
+    const portrait = document.getElementById('figurePortrait');
+    const fallback = document.getElementById('figureFallback');
+    portrait.alt = `Potret ${figure.name}`;
+    portrait.classList.remove('is-hidden');
+    fallback.classList.remove('is-visible');
+    fallback.textContent = figure.initials;
+    portrait.onerror = () => {
+      portrait.classList.add('is-hidden');
+      fallback.classList.add('is-visible');
+    };
+    portrait.src = figure.image;
+  }
+
+  const views = {
+    siswa: {
+      heading: "Jadwal &amp; tugasmu hari ini — Kelas VIII-A",
+      rows: [
+        { time: "07.00", title: "Matematika — Bab Pecahan", sub: "Ruang Live · Bu Sari", badge: "Live", accent: "teal" },
+        { time: "09.30", title: "Tugas IPA: Laporan Pengamatan", sub: "Tenggat hari ini, 23.59", badge: "Belum dikumpulkan", accent: "coral" },
+        { time: "13.00", title: "Ulangan Bahasa Indonesia", sub: "30 soal · 40 menit", badge: "Segera", accent: "yellow" },
+      ],
+      progressLabel: "Progres tugas minggu ini",
+      progress: 68,
+    },
+    guru: {
+      heading: "Ringkasan kelas — Bu Sari, Matematika",
+      rows: [
+        { time: "VIII-A", title: "32 siswa · 4 tugas menunggu dinilai", sub: "Tugas: Bab Pecahan", badge: "Perlu dinilai", accent: "coral" },
+        { time: "VIII-B", title: "30 siswa · Live class 09.00", sub: "3 siswa belum konfirmasi hadir", badge: "Live", accent: "teal" },
+        { time: "IX-A", title: "Ulangan Harian 2 selesai otomatis dinilai", sub: "Rata-rata kelas: 82", badge: "Selesai", accent: "yellow" },
+      ],
+      progressLabel: "Materi semester ini terunggah",
+      progress: 74,
+    }
+  };
+
+  function render(view){
+    const data = views[view];
+    const body = document.getElementById('deviceBody');
+    const rowsHtml = data.rows.map(r => `
+      <div class="row-item">
+        <div class="time-chip mono">${r.time}</div>
+        <div class="row-main">
+          <div class="row-title">${r.title}</div>
+          <div class="row-sub">${r.sub}</div>
+        </div>
+        <div class="badge badge-${r.accent}">${r.badge}</div>
+      </div>
+    `).join('');
+    body.innerHTML = `
+      <div class="device-heading">${data.heading}</div>
+      ${rowsHtml}
+      <div style="margin-top:16px;">
+        <div class="row-sub" style="display:flex; justify-content:space-between;">
+          <span>${data.progressLabel}</span><span class="mono">${data.progress}%</span>
+        </div>
+        <div class="progress"><span style="width:${data.progress}%"></span></div>
+      </div>
+    `;
+  }
+
+  function switchView(view, btn){
+    document.querySelectorAll('.device-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    render(view);
+  }
+
+  function toggleMenu(button){
+    const menu = document.getElementById('mobileLinks');
+    const open = menu.classList.toggle('is-open');
+    button.setAttribute('aria-expanded', String(open));
+  }
+
+  renderFigure();
+</script>
+
+</body>
+</html>
