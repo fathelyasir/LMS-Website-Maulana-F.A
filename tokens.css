@@ -186,6 +186,7 @@ img{ max-width:100%; display:block; }
 .class-picker{ display:flex; flex-direction:column; gap:5px; color:var(--muted); font-size:12px; font-weight:700; }
 .class-picker select{ min-width:230px; padding:10px 12px; border:1px solid var(--border); border-radius:10px; background:var(--surface); color:var(--ink); font:inherit; }
 .list-row,.task-card,.quiz-card{ display:flex; align-items:flex-start; justify-content:space-between; gap:16px; padding:14px 0; border-bottom:1px solid var(--border); }
+.row-actions{ display:flex; align-items:center; justify-content:flex-end; gap:8px; flex-wrap:wrap; }
 .list-row:last-child,.task-card:last-child,.quiz-card:last-child{ border-bottom:0; }
 .list-row strong,.task-card strong{ display:block; color:var(--ink); }
 .list-row small,.task-card small{ display:block; margin-top:4px; color:var(--muted); font-size:12px; }

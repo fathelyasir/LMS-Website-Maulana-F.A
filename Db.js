@@ -177,6 +177,24 @@ export function createKelas(guruId, { nama, mapel }) {
   return kelasBaru;
 }
 
+export function deleteKelas(kelasId) {
+  const db = readDB();
+  if (!db.kelas.some((kelas) => kelas.id === kelasId)) throw new Error("Kelas tidak ditemukan.");
+  db.kelas = db.kelas.filter((kelas) => kelas.id !== kelasId);
+  const taskIds = db.tugas.filter((task) => task.kelasId === kelasId).map((task) => task.id);
+  const quizIds = db.kuis.filter((quiz) => quiz.kelasId === kelasId).map((quiz) => quiz.id);
+  db.materi = db.materi.filter((item) => item.kelasId !== kelasId);
+  db.tugas = db.tugas.filter((item) => item.kelasId !== kelasId);
+  db.pengumpulan = db.pengumpulan.filter((item) => !taskIds.includes(item.tugasId));
+  db.kuis = db.kuis.filter((item) => item.kelasId !== kelasId);
+  db.hasilKuis = db.hasilKuis.filter((item) => !quizIds.includes(item.kuisId));
+  db.forum = db.forum.filter((item) => item.kelasId !== kelasId);
+  db.liveClass = db.liveClass.filter((item) => item.kelasId !== kelasId);
+  db.absensi = db.absensi.filter((item) => item.kelasId !== kelasId);
+  db.users.forEach((user) => { if (user.kelasId === kelasId) delete user.kelasId; });
+  writeDB(db);
+}
+
 export function getSiswaByIds(ids) {
   const db = readDB();
   return db.users.filter((u) => ids.includes(u.id));
@@ -203,6 +221,12 @@ export function addMateri(kelasId, { judul, tipe, isi }) {
   return item;
 }
 
+export function deleteMateri(materiId) {
+  const db = readDB();
+  db.materi = db.materi.filter((item) => item.id !== materiId);
+  writeDB(db);
+}
+
 // Tugas & Penilaian
 export function getTugasByKelas(kelasId) {
   const db = readDB();
@@ -221,6 +245,13 @@ export function addTugas(kelasId, { judul, deskripsi, tenggat }) {
   db.tugas.push(item);
   writeDB(db);
   return item;
+}
+
+export function deleteTugas(tugasId) {
+  const db = readDB();
+  db.tugas = db.tugas.filter((item) => item.id !== tugasId);
+  db.pengumpulan = db.pengumpulan.filter((item) => item.tugasId !== tugasId);
+  writeDB(db);
 }
 
 export function getPengumpulanForTugas(tugasId) {
@@ -280,6 +311,13 @@ export function addKuis(kelasId, { judul, durasiMenit, soal }) {
   return item;
 }
 
+export function deleteKuis(kuisId) {
+  const db = readDB();
+  db.kuis = db.kuis.filter((item) => item.id !== kuisId);
+  db.hasilKuis = db.hasilKuis.filter((item) => item.kuisId !== kuisId);
+  writeDB(db);
+}
+
 export function getHasilKuisSiswa(kuisId, siswaId) {
   const db = readDB();
   return db.hasilKuis.find((h) => h.kuisId === kuisId && h.siswaId === siswaId) || null;
@@ -334,6 +372,12 @@ export function addForumBalasan(topikId, { isi, penulisId }) {
   writeDB(db);
 }
 
+export function deleteForumTopik(topikId) {
+  const db = readDB();
+  db.forum = db.forum.filter((item) => item.id !== topikId);
+  writeDB(db);
+}
+
 // Live Class
 export function getLiveClassByKelas(kelasId) {
   const db = readDB();
@@ -352,6 +396,14 @@ export function addLiveClass(kelasId, { judul, waktu, tautan }) {
   db.liveClass.push(item);
   writeDB(db);
   return item;
+}
+
+export function deleteLiveClass(liveId) {
+  const db = readDB();
+  const live = db.liveClass.find((item) => item.id === liveId);
+  db.liveClass = db.liveClass.filter((item) => item.id !== liveId);
+  if (live) db.absensi = db.absensi.filter((item) => item.sumber !== `Live: ${live.judul}`);
+  writeDB(db);
 }
 
 export function joinLiveClass(liveId, siswaId) {
@@ -466,4 +518,25 @@ export function createUserByAdmin({ nama, identifier, password, peran, mapel = "
   writeDB(db);
   const { password: ignored, ...safeUser } = user;
   return safeUser;
+}
+
+export function deleteUserByAdmin(userId) {
+  const db = readDB();
+  const user = db.users.find((item) => item.id === userId);
+  if (!user) throw new Error("Akun tidak ditemukan.");
+  if (user.peran === "admin" && db.users.filter((item) => item.peran === "admin").length <= 1) {
+    throw new Error("Admin terakhir tidak dapat dihapus.");
+  }
+  db.users = db.users.filter((item) => item.id !== userId);
+  db.kelas.forEach((kelas) => {
+    kelas.siswaIds = kelas.siswaIds.filter((id) => id !== userId);
+    if (kelas.guruId === userId) kelas.guruId = "";
+  });
+  db.pengumpulan = db.pengumpulan.filter((item) => item.siswaId !== userId);
+  db.hasilKuis = db.hasilKuis.filter((item) => item.siswaId !== userId);
+  db.forum.forEach((topic) => { topic.balasan = topic.balasan.filter((reply) => reply.penulisId !== userId); });
+  db.forum = db.forum.filter((topic) => topic.penulisId !== userId);
+  db.absensi = db.absensi.filter((item) => item.siswaId !== userId);
+  db.liveClass.forEach((live) => { live.hadir = live.hadir.filter((id) => id !== userId); });
+  writeDB(db);
 }
