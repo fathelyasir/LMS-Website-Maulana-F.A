@@ -34,6 +34,15 @@ jobs:
       - name: Build application
         run: npm run build
 
+      - name: Include landing page and static portraits
+        run: |
+          cp landing.html dist/landing.html
+          cp assets/logo-kelasku.png dist/assets/logo-kelasku.png
+          cp assets/habibie.jpg dist/assets/habibie.jpg
+          cp assets/ki-hajar.jpg dist/assets/ki-hajar.jpg
+          cp assets/kartini.jpg dist/assets/kartini.jpg
+          cp assets/buya-hamka.jpg dist/assets/buya-hamka.jpg
+
       - name: Publish build to gh-pages
         uses: peaceiris/actions-gh-pages@v4
         with:
