@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useAuth } from "./Authcontext.jsx";
 import { Link, useNavigate } from "react-router-dom";
+import logoKelasku from "./assets/logo-kelasku.png";
 
 const ROLES = [
   { id: "siswa", label: "Siswa", hint: "Masuk pakai NISN" },
@@ -53,7 +54,7 @@ export default function LoginPage() {
       <div style={styles.card}>
         <Link to="/landing" style={styles.homeLink}>← Kembali ke halaman utama</Link>
         <div style={styles.brandRow}>
-          <span style={styles.brandMark} />
+          <img src={logoKelasku} alt="Kelasku" style={styles.brandLogo} />
           <span style={styles.brandName}>Kelasku</span>
         </div>
 
@@ -179,10 +180,7 @@ const styles = {
     fontWeight: 700,
   },
   brandRow: { display: "flex", alignItems: "center", gap: 10, marginBottom: 28 },
-  brandMark: {
-    width: 26, height: 26, borderRadius: 7,
-    background: "linear-gradient(135deg, var(--teal), #6B9F98)",
-  },
+  brandLogo: { width: 36, height: 36, objectFit: "contain", borderRadius: 8 },
   brandName: { fontWeight: 700, fontSize: 18, color: "var(--ink)" },
   title: { fontSize: 24, fontWeight: 700, color: "var(--ink)", margin: 0 },
   subtitle: { fontSize: 14.5, color: "var(--muted)", marginTop: 8, lineHeight: 1.5 },

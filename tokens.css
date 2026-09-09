@@ -108,6 +108,7 @@ img{ max-width:100%; display:block; }
 .auth-aside::before{ content:""; position:absolute; width:520px; height:520px; right:-250px; top:-130px; border:1px solid rgba(131,200,182,.24); border-radius:50%; box-shadow:0 0 0 34px rgba(131,200,182,.03),0 0 70px rgba(131,200,182,.08); }
 .auth-aside::after{ content:""; position:absolute; width:280px; height:280px; right:-120px; bottom:-100px; border:36px solid var(--violet); transform:rotate(25deg); opacity:.6; filter:drop-shadow(0 0 24px var(--glow-violet)); }
 .auth-brand{ color:#fff; display:flex; align-items:center; gap:10px; font:700 21px var(--font-display); }
+.auth-logo{ width:38px; height:38px; object-fit:contain; border-radius:9px; }
 .auth-mark{ width:28px; height:28px; border-radius:8px; background:var(--teal); box-shadow:5px 5px 0 var(--yellow); position:relative; }
 .auth-mark::after{ content:""; position:absolute; inset:7px 7px 11px; background:var(--yellow); border-radius:2px; }
 .auth-kicker{ display:block; color:var(--teal); font:500 11px var(--font-mono); letter-spacing:.1em; }

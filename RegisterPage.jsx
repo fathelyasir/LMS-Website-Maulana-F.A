@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import logoKelasku from "./assets/logo-kelasku.png";
 import { useAuth } from "./Authcontext.jsx";
 
 export default function RegisterPage() {
@@ -30,7 +31,7 @@ export default function RegisterPage() {
 
   return <main className="auth-page register-page">
     <section className="auth-aside">
-      <Link className="auth-brand" to="/landing"><span className="auth-mark" />Kelasku</Link>
+      <Link className="auth-brand" to="/landing"><img src={logoKelasku} alt="Kelasku" className="auth-logo" />Kelasku</Link>
       <div><span className="auth-kicker">RUANG BELAJAR / 02</span><h1>Mulai dari satu kelas kecil.</h1><p>Masuk ke materi, tugas, kuis, dan diskusi sekolahmu dalam satu ruang yang rapi.</p></div>
       <div className="auth-aside-note"><strong>Butuh akun guru atau admin?</strong><span>Mintalah admin sekolah membuatkannya melalui panel Kelola akun.</span></div>
     </section>

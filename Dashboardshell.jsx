@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "./Authcontext.jsx";
+import logoKelasku from "./assets/logo-kelasku.png";
 
 export default function DashboardShell({ navItems, children }) {
   const { user, logout } = useAuth();
@@ -13,8 +14,8 @@ export default function DashboardShell({ navItems, children }) {
       <style>{responsiveCss}</style>
       <aside className={`kelasku-sidebar${mobileOpen ? " is-open" : ""}`} style={{ ...styles.sidebar, ...(mobileOpen ? styles.sidebarOpen : {}) }}>
         <Link to="/" style={styles.brand}>
-          <span style={styles.brandMark} />
-          Kelasku
+          <img src={logoKelasku} alt="Kelasku" style={styles.brandLogo} />
+          <span>Kelasku</span>
         </Link>
 
         <nav style={styles.nav}>
@@ -63,7 +64,7 @@ const styles = {
   },
   sidebarOpen: {},
   brand: { display: "flex", alignItems: "center", gap: 10, fontWeight: 700, fontSize: 18, color: "var(--ink)", fontFamily: "var(--font-display)", marginBottom: 30 },
-  brandMark: { width: 26, height: 26, borderRadius: 8, background: "linear-gradient(135deg, var(--teal), var(--violet))", boxShadow: "0 0 22px var(--glow-teal)" },
+  brandLogo: { width: 34, height: 34, objectFit: "contain", borderRadius: 8 },
   nav: { display: "flex", flexDirection: "column", gap: 4, flex: 1 },
   navItem: { padding: "11px 13px", borderRadius: 12, fontSize: 14.5, fontWeight: 600, color: "var(--ink-soft)", transition: "all .2s ease" },
   navItemActive: { background: "linear-gradient(90deg, rgba(131,200,182,.14), rgba(169,165,197,.07))", color: "var(--teal)", boxShadow: "inset 3px 0 var(--teal)" },
